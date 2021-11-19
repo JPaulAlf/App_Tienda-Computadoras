@@ -1,0 +1,172 @@
+﻿@*@model IEnumerable<Infraestructure.Models.HISTORICO>*@
+@model  PagedList.IPagedList<Infraestructure.Models.HISTORICO>
+@using PagedList.Mvc;
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryajax")
+    <script type="text/javascript">
+        $(function () {
+            var dateFormat = "mm/dd/yy",
+                from = $("#from")
+                    .datepicker({
+                        defaultDate: "+1w",
+                        changeMonth: true,
+                        numberOfMonths: 3
+                    })
+                    .on("change", function () {
+                        to.datepicker("option", "minDate", getDate(this));
+                    }),
+                to = $("#to").datepicker({
+                    defaultDate: "+1w",
+                    changeMonth: true,
+                    numberOfMonths: 3
+                })
+                    .on("change", function () {
+                        from.datepicker("option", "maxDate", getDate(this));
+                    });
+
+            function getDate(element) {
+                var date;
+                try {
+                    date = $.datepicker.parseDate(dateFormat, element.value);
+                } catch (error) {
+                    date = null;
+                }
+
+                return date;
+            }
+        });
+    </script>
+}
+
+@{
+    ViewBag.Title = "Informe Entrada";
+    String from=ViewBag.From, to=ViewBag.To;
+}
+@Styles.Render("~/Content/PagedList.css")
+@Styles.Render("~/Content/STYLE-GENERAL/layout-home-page.css")
+
+
+<h1 class="display-6" id="estiloColor">
+    Informe de Entradas
+</h1>
+<hr class="my-4">
+
+<div style="margin-bottom: 20px" id="controles">
+    @using (Html.BeginForm(/*"InformeEntradaFecha", "Informes", FormMethod.Post, new { enctype = "multipart/form-data" }*/))
+    {
+
+    <div style="display:inline;">
+
+        <label class="lead" for="from">Desde</label>
+        @Html.TextBox("from", from, new { @placeholder = "Seleccionar Fecha",
+       style = "padding: .75rem 1.5rem;font-size: 1rem;font-weight: 400;line-height: 1.5;color: #55595c;" +
+       "background-color: #f7f7f9; background - clip: padding - box; border: 3px solid #ced4da; -webkit-appearance: none; " +
+       "-moz-appearance: none; border-radius: 0;transition: border - color .15s ease-in-out, box - shadow .15s ease-in-out;" })
+
+        <label class="lead" for="to">hasta</label>
+          @Html.TextBox("to", to, new {  @placeholder = "Seleccionar Fecha",
+         style = "padding: .75rem 1.5rem;font-size: 1rem;font-weight: 400;line-height: 1.5;color: #55595c;" +
+       "background-color: #f7f7f9; background - clip: padding - box; border: 3px solid #ced4da; -webkit-appearance: none; " +
+       "-moz-appearance: none; border-radius: 0;transition: border - color .15s ease-in-out, box - shadow .15s ease-in-out;" })
+        
+                @*< input type="text" id="from" name="from" style="
+        padding: .75rem 1.5rem;font-size: 1rem;font-weight: 400;line-height: 1.5;color: #55595c;background-color: #f7f7f9;
+        background-clip: padding-box; border: 3px solid #ced4da; -webkit-appearance: none; -moz-appearance: none; border-radius: 0;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;}"
+               placeholder="Seleccionar Fecha">*@
+
+        @*<input type="text" id="to" name="to" style="
+        padding: .75rem 1.5rem;font-size: 1rem;font-weight: 400;line-height: 1.5;color: #55595c;background-color: #f7f7f9;
+        background-clip: padding-box; border: 3px solid #ced4da; -webkit-appearance: none; -moz-appearance: none; border-radius: 0;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;}"
+               placeholder="Seleccionar Fecha">*@
+
+    </div>
+        <input type="submit" value="Buscar" class="btn btn-primary" style="display:inline;" />
+    }
+
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr class="table-primary">
+            <th width="180px">
+                @Html.DisplayNameFor(model => model.First().fechaHora)
+            </th>
+            <th style="text-align:center">
+                @Html.DisplayNameFor(model => model.First().USUARIO.cedula)
+            </th>
+            <th style="text-align:center">
+                @Html.DisplayNameFor(model => model.First().MOVIMIENTO)
+            </th>
+            <th style="text-align:center">
+                @Html.DisplayNameFor(model => model.First().HistDetalleEntradaSalida.ElementAt(0).IDSucursalEntra)
+            </th>
+            <th style="text-align:center">Ver Detalle</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @if (Model.Count() == 0)
+        {
+            <tr class="table-warning">
+
+                <td colspan="5"><div class="text-center">No hay registros</div> </td>
+            </tr>
+        }
+        else
+        {
+
+            foreach (var item in Model)
+            {
+                <tr class="table-secondary">
+                    <td style="text-align:center">
+                        @Html.DisplayFor(modelItem => item.fechaHora)
+                    </td>
+                    <td style="text-align:center">
+                        @Html.DisplayFor(modelItem => item.USUARIO.cedula)
+                    </td>
+                    <td style="text-align:center">
+                        @Html.DisplayFor(modelItem => item.MOVIMIENTO.nombre)
+                    </td>
+                    <td style="text-align:center">
+                        @Html.DisplayFor(modelItem => item.HistDetalleEntradaSalida.ElementAt(0).SUCURSAL.nombre)
+                    </td>
+                    <td style="width:20%; text-align:center" id="estiloColorHover">
+                        @Html.ActionLink("Detalles", "Details", new { id = item.ID })
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+
+</table>
+
+
+@* Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount*@
+
+@Html.PagedListPager(Model, page => Url.Action("InformeEntrada", new {from=from, to=to, page = page }),
+new PagedListRenderOptions
+{
+   LinkToFirstPageFormat = "<< Primera ",
+   LinkToPreviousPageFormat = "< Anterior ",
+   LinkToNextPageFormat = " Siguiente >",
+   LinkToLastPageFormat = " Ultima >>",
+   UlElementClasses = new[] { "pagination" },
+   LiElementClasses = new[] { "page-item" },
+   MaximumPageNumbersToDisplay = 5
+    //,DelimiterBetweenPageNumbers = "-"
+})
+
+
+
+
+@section footer{
+    <footer class="footer mt-auto py-3 ">
+        <hr />
+        <div class="container">
+            <p>&copy; @DateTime.Now.Year - Sunrise Computers &reg;</p>
+            <p>Si deseas conocer mas acerca de la página, favor visitar la página "Acerca de"</p>
+        </div>
+    </footer>
+}

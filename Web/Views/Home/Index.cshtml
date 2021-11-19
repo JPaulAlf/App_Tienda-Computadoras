@@ -1,0 +1,112 @@
+﻿@model IEnumerable<Infraestructure.Models.PRODUCTOS>
+@{
+    ViewBag.Title = "Inicio";
+}
+
+<div class="jumbotron">
+    <h2 class="display-6">Bienvenido a la aplicacion!</h2>
+    <p class="lead">Cualquier cambio generado, afectara directamente los registros de la base de datos. ¡Favor tener cuidado!</p>
+    <hr class="my-4">
+    <p class="lead">Estos son los últimos datos generados por la aplicación, cualquier inconsistencia, favor llamar a su supervisor</p>
+</div>
+
+<div class="row ">
+    <div class="col-lg-4 col-md-5">
+        <div class="card text-white bg-success mb-3 border border-white " style="max-width: 20rem;">
+            <div class="card-header bg-dark font-weight-bold">Productos Registrados</div>
+            <div class="card-body">
+                <h1 class="card-title font-weight-bold" style="text-align:center">#@ViewBag.CantProductos</h1>
+                <h6 class="card-text">**Inventario total</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-5">
+        <div class="card text-white bg-warning mb-3 border border-white" style="max-width: 20rem;">
+            <div class="card-header bg-dark">Entradas realizadas</div>
+            <div class="card-body">
+                <h1 class="card-title font-weight-bold" style="text-align:center;">#@ViewBag.CantEntradas</h1>
+                <h6 class="card-text ">**Actualizado hace 24h</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-5">
+        <div class="card text-white bg-danger mb-3 border border-white" style="max-width: 20rem;">
+            <div class="card-header bg-dark">Salidas realizadas</div>
+            <div class="card-body">
+                <h1 class="card-title font-weight-bold" style="text-align:center">#@ViewBag.CantSalidos</h1>
+                <h6 class="card-text ">**Actualizado hace 24h</h6>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="table-responsive-md">
+        <table style="display: block; overflow-x: auto " class="table table-hover">
+            <p class="lead">
+                Inventario en nivel de reposición: Lista de productos en stock que se encuentran bajo el nivel
+                de reposición definido
+            </p>
+            <thead>
+                <tr class="table-primary" style="text-align:center">
+                    <th scope="col">Categoria</th>
+                    <th scope="col">Serial</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Marca</th>
+                    <th scope="col">Sucursal</th>
+                    <th scope="col">Cantidad actual</th>
+                    <th scope="col">Cantidad minima</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+
+
+                    <tr class="table-warning">
+                        <td colspan="7"><div class="text-center">No hay registros</div> </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        foreach (var ps in item.ProdSuc)
+                        {
+                            if (ps.cant < item.cantMin)
+                            {
+                                <tr class=@(ps.cant <= item.cantMin/2?"table-danger":"table-warning")>
+                                    <th scope="row">@Html.DisplayFor(modelItem => item.CATEGORIA.descripcion)</th>
+                                    <td>@Html.DisplayFor(modelItem => item.serial)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.nombre)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.marca)</td>
+                                    <td>@Html.DisplayFor(modelItem => ps.SUCURSAL.nombre)</td>
+                                    <td style="text-align:center">@Html.DisplayFor(modelItem => ps.cant)</td>
+                                    <td style="text-align:center">@Html.DisplayFor(modelItem => item.cantMin)</td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+
+
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+
+@section footer{
+    <footer class="footer mt-auto py-3 ">
+        <hr />
+        <div class="container">
+            <p>&copy; @DateTime.Now.Year - Sunrise Computers &reg;</p>
+            <p>Si deseas conocer mas acerca de la página, favor visitar la página "Acerca de"</p>
+        </div>
+    </footer>
+}

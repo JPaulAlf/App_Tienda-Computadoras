@@ -1,0 +1,119 @@
+﻿@model Infraestructure.Models.USUARIO
+
+@{
+    ViewBag.Title = "Inicio Sesion";
+    Layout = "~/Views/Shared/_LogIn.cshtml";
+}
+
+
+<div>
+
+    <ul class="nav nav-tabs align-content-center" style="transform: translateX(-50%); margin-left: 50%;">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#InicioSesion">Inicio de Sesión </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#Registrarse">Registrarse</a>
+        </li>
+    </ul>
+
+    <div id="myTabContent" class="tab-content">
+
+        <div class="tab-pane fade active show" id="InicioSesion">
+            <h1 class="display-6" id="estiloColor" style="margin-top:25px; text-align:center">
+                Inicio de Sesión
+            </h1>
+            <hr class="my-4" style="width:75%;transform: translateX(-50%); margin-left: 50%;">
+            <div style="width:50%; transform: translateX(-50%); margin-left: 50%;">
+                @using (Html.BeginForm("Login", "LogIn", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.correo)
+                        @Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.correo, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group" style="margin-top:20px">
+                        @Html.LabelFor(model => model.contrasenha)
+                        @Html.EditorFor(model => model.contrasenha, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                        @Html.ValidationMessageFor(model => model.contrasenha, "", new { @class = "text-danger" })
+                    </div>
+
+                    @*@Html.ActionLink("Ingresar", "Index", "Home", null,
+                        new { @class = "btn btn-primary", @style = "text-align: center; margin-left: 50%; transform: translateX(-50%); margin-top:20px" })*@
+
+                    <input type="submit" value="Ingresar" class="btn btn-primary" style="text-align: center; margin-left: 50%; transform: translateX(-50%); margin-top:20px" />
+                }
+            </div>
+        </div>
+
+        <div class="tab-pane fade " id="Registrarse">
+            <h1 class="display-6" id="estiloColor" style="margin-top:25px; text-align:center">
+                Registrarse
+            </h1>
+            <hr class="my-4" style="width:75%;transform: translateX(-50%); margin-left: 50%;">
+            <div style="width:50%; transform: translateX(-50%); margin-left: 50%;">
+                @using (Html.BeginForm("Registrar", "LogIn", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group ">
+                    @Html.LabelFor(model => model.cedula)
+                    @Html.EditorFor(model => model.cedula, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.cedula, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group " style="margin-top:10px">
+                    @Html.LabelFor(model => model.nombre)
+                    @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group " style="margin-top:10px">
+                    @Html.LabelFor(model => model.apellidos)
+                    @Html.EditorFor(model => model.apellidos, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.apellidos, "", new { @class = "text-danger" })
+                </div>
+
+                    <div class="form-group " style="margin-top:10px">
+                    @Html.LabelFor(model => model.telefono)
+                    @Html.EditorFor(model => model.telefono, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.telefono, "", new { @class = "text-danger" })
+                    </div>
+                    
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.correo)
+                        @Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.correo, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group" style="margin-top:20px">
+                        @Html.LabelFor(model => model.contrasenha)
+                        @Html.EditorFor(model => model.contrasenha, new { htmlAttributes = new { @class = "form-control", type = "password" } })
+                        @Html.ValidationMessageFor(model => model.contrasenha, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group " style="margin-top:10px">
+                        <label for="Contrasenia2"> Confirmar Contraseña</label>
+                        <input type="password" class="form-control" id="Contrasenia2" name="Contrasenia2">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style=" text-align: center; margin-left: 50%; transform: translateX(-50%); margin-top:20px">Registrarse</button>
+
+                }
+
+                
+
+                
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

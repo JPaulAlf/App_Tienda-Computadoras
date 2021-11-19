@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Sunrise Computers</title>
+    <link rel=" icon" href="~/Content/IMAGES-PAGES/sol-barra-web.png" />
+    <link href="~/Content/STYLE-GENERAL/layout-home-page.css" rel="stylesheet" />
+    <link href="~/Content/STYLE-GENERAL/product-list.css" rel="stylesheet" />
+    <link href="~/Content/STYLE-GENERAL/provider-list.css" rel="stylesheet" />
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("styles", required: false)
+
+
+</head>
+<body>
+    @Html.Partial("_Menu")
+
+    <main class="main-container-page">
+        <div>
+            @RenderBody()
+        </div>
+    </main>
+
+    @RenderSection("footer", false)
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/popper")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/sweetalert")
+    @RenderSection("scripts", required: false)
+
+    @if (ViewBag.NotificationMessage != null)
+    {
+        <script>
+            @Html.Raw(@ViewBag.NotificationMessage);
+        </script>
+    }
+</body>
+</html>

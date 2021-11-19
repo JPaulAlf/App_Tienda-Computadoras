@@ -1,0 +1,403 @@
+﻿@*@model PagedList.IPagedList<Web.ViewModel.ViewModelMovimiento>*@
+@model Web.ViewModel.ViewModelMovimiento
+@{
+    ViewBag.Title = "Movimiento Entrada";
+    Layout = "~/Views/Shared/_LayoutMaster.cshtml";
+    String filtro = ViewBag.Filtro;
+
+    String fechaActual = DateTime.Now.ToString("dd/MMMM/yyyy hh:mm:ss");
+
+}
+@using Infraestructure.Models;
+
+
+
+
+<ul class="nav nav-tabs" style="width:100%">
+
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#ProductosGenerales">Productos</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#Detalle">Detalle</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#Finalizar">Finalizar</a>
+    </li>
+
+</ul>
+<div style="height:480px">
+
+    <div id="myTabContent" class="tab-content" style="width:100%">
+
+
+
+        <div class="tab-pane fade active show" id="ProductosGenerales">
+            @*@using (Html.BeginForm("AgregarActualizarProducto", "Movimiento", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+            <h1 class="display-6" id="estiloColor" style="margin-top:25px; text-align:center">
+                Productos disponibles para movimiento
+            </h1>
+            <hr class="my-4">
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <p class="lead">
+                            Proveedores disponibles a seleccionar.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        @Html.DropDownList("comboProveedor",
+                            (SelectList)ViewBag.IDProveedor,
+                                    "Seleccione un proveedor",
+                                        htmlAttributes: new { @class = "form-control", onChange = "slectProv()" })
+                    </div>
+                </div>
+            </div>
+            <br />
+            <table class="table table-hover">
+                <thead>
+                    <tr class="table-primary">
+                        <th>
+                            @Html.DisplayNameFor(model => model.prodList.First().CATEGORIA.descripcion)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.prodList.First().marca)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.prodList.First().nombre)
+                        </th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="resultado">
+                    @if (Model.prodList.Count() >= 0 || Model.prodList.Equals(null))
+                    {
+                        <tr class="table-warning">
+                            <td colspan="4"><div class="text-center">Favor seleccionar un proveedor</div> </td>
+                        </tr>
+                    }
+                    @*else
+                        {
+                            foreach (var item in Model.prodList)
+                            {
+                                <tr class="table-secondary">
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CATEGORIA.descripcion)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.marca)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.nombre)
+                                    </td>
+                                    <td style="width:20%" id="estiloColorHover">
+                                        @Ajax.ActionLink("Agregar", "SeleccionarProducto", "Movimiento",
+                                             new { id = item.ID },
+                                             new AjaxOptions
+                                                  {
+                                                 UpdateTargetId = "modal-content",
+                                                 InsertionMode = InsertionMode.Replace,
+                                                 OnComplete = "mostrarModal()"
+                                             }, new { @class = "btn btn-primary update-contact" })
+                                    </td>
+                                </tr>
+                            }
+                        }*@
+                </tbody>
+            </table>
+            @*}*@
+
+
+        </div>
+
+        <div class="tab-pane fade " id="Detalle" style="z-index:2">
+            <h1 class="display-6" id="estiloColor" style="margin-top:25px; text-align:center;">
+                Detalle del movimiento
+            </h1>
+            <hr class="my-4">
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <p id="HoraActual" class="lead">
+                           
+                        </p>
+                        
+                    </div>
+                </div>
+                <div class="col-6">
+                    <p class="lead" style="display: inline">
+                        Usuario:
+                    </p>
+                    <p class="lead" style="display: inline">
+                        @{
+                            Infraestructure.Models.USUARIO oUsuario;
+                            oUsuario = (Infraestructure.Models.USUARIO)Session["User"];
+                            string info = $"{oUsuario.nombre} {oUsuario.apellidos}";
+
+                        }
+                        @*@Html.Label(info, htmlAttributes: new { @class = "control-label col-lg-6" })*@
+                        <label class="control-label col-lg-6">
+                            @info
+                        </label>
+                    </p>
+                </div>
+            </div>
+
+            <br />
+
+            <table class="table table-hover">
+                <thead>
+                    <tr class="table-primary">
+                        <th>
+                            @Html.DisplayNameFor(model => model.prodList.First().CATEGORIA.descripcion)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.prodList.First().marca)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.prodList.First().nombre)
+                        </th>
+                        <th>
+                            Cantidad
+                        </th>
+                        <th>
+                            Proveedor
+                        </th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="resultadoDetalle">
+                    <tr class="table-warning">
+                        <td colspan="6"><div class="text-center">No hay registros</div> </td>
+                    </tr>
+                    @*@if (Model.prodList.Count() == 0 || Model.prodList.Equals(null))
+                        {
+
+                        }
+                        else
+                        {
+                            foreach (var item in Model.prodList)
+                            {
+                                <tr class="table-secondary">
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CATEGORIA.descripcion)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.marca)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.nombre)
+                                    </td>
+                                    <td style="width:20%" id="estiloColorHover">
+                                        @Html.ActionLink("Borrar", "", new { id = item.ID }) |
+                                        @Html.ActionLink("Editar", "", new { id = item.ID })
+                                    </td>
+                                </tr>
+                            }
+                        }*@
+                </tbody>
+            </table>
+
+
+        </div>
+
+        <div class="tab-pane fade " id="Finalizar" style="z-index:3">
+            <h1 class="display-6" id="estiloColor" style="margin-top:25px; text-align:center">
+                Confirmación
+            </h1>
+            <hr class="my-4">
+            <p class="lead" style=" text-align: center; margin-top:20px">
+                ¡ATENCION! Se guardara el movimiento especificado en la Base de Datos
+            </p>
+            <br />
+            <div class="container">
+                <div style="margin-bottom: 2%; " class="row">
+                    <div class="col-lg-12">
+
+                        @Html.Label("Comentario acerca del movimiento", htmlAttributes: new { @class = "control-label col-lg-6" })
+                        @Html.Editor("txtComentario", new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            @Html.Label("Seleccione la sucursal de entrada", htmlAttributes: new { @class = "control-label col-lg-8" })
+                            @Html.DropDownList("comboSucursal",
+                                                        (SelectList)ViewBag.IDSucursal,
+                                                                "Seleccione una sucursal",
+                                                                    htmlAttributes: new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            @Html.Label("Seleccione el concepto del movimiento", htmlAttributes: new { @class = "control-label col-lg-8" })
+                            <select id="comboConcepto" class="form-control dropdown" name="select">
+                                <option value="" selected>Seleccione el concepto</option>
+                                <option value="Compra">Compra</option>
+                                <option value="Devolución">Devolución</option>
+                                <option value="Ajuste inventario">Ajuste inventario</option>
+                                <option value="Traspaso">Traspaso</option>
+                                <option value="Inventario inicial">Inventario inicial</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <input type="button" onclick="EjecutarMovimiento()" value="Realizar Movimiento" class="btn btn-primary"
+                   style=" text-align: center; margin-left: 50%; transform: translateX(-50%); margin-top:60px" />
+
+        </div>
+
+    </div> @*final de los tabs*@
+
+
+</div>
+@*<div  id="estiloColorHover3">
+        @Html.ActionLink("<< Volver al inicio", "Index", "Home")
+    </div>*@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div id="modal-content" class="modal-content">
+
+        </div>
+    </div>
+</div>
+<br />
+
+
+
+@section Scripts {
+    @*@Scripts.Render("~/bundles/bootstrap-select")
+        @Styles.Render("~/Content/bootstrap-Select/css")*@
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryajax")
+
+
+    <script type="text/javascript">
+        showTime();
+        function showTime() {
+            myDate = new Date();
+            hours = myDate.getHours();
+            minutes = myDate.getMinutes();
+            seconds = myDate.getSeconds();
+            date = myDate.getDate();
+            month = myDate.getMonth() + 1;
+            year = myDate.getFullYear();
+
+            if (hours < 10) hours = 0 + hours;
+
+            if (minutes < 10) minutes = "0" + minutes;
+
+            if (seconds < 10) seconds = "0" + seconds;
+
+            $("#HoraActual").text("Fecha: " + date + "/" + month + "/" + year + "  " + hours + ":" + minutes + ":" + seconds);
+            setTimeout("showTime()", 1000);
+        }
+        const { default: update } = require("../../Scripts/src/methods/update");
+
+        function mostrarModal(id) {
+
+            //$("#myModal").attr('data-toggle', 'modal');
+            $('#myModal').modal('show');
+        }
+        function CerrarModal() {
+
+            //$("#myModal").attr('data-toggle', 'modal');
+            $('#myModal').modal('hide');
+        }
+
+        function slectProv() {
+            var id = document.getElementById("comboProveedor").value;
+            console.log(id);
+            $.ajax({
+                type: "GET",
+                dataType: 'text',
+                url: "/Movimiento/proveedorXproducto",
+                data: { "id": id },
+                success: function (data) {
+                    $("#resultado").html('');
+                    $("#resultado").html(data);
+                }, error: function (xhr, status, error) {
+                    console.log("Error: " + error + ", No Error: " + xhr.status);
+                },
+            });
+        }
+        function Agreg() {
+            var id = document.getElementById("id").value;
+            var cantidad = document.getElementById("cantidad").value;
+            var idProveedor = document.getElementById("comboProveedor").value;
+            console.log(id);
+            $.ajax({
+                type: "GET",
+                dataType: 'text',
+                url: "/Movimiento/AgregarActualizarProducto",
+                data: { "idProveedor": idProveedor, "cantidad": cantidad, "id": id },
+                success: function (data) {
+                    $("#resultadoDetalle").html('');
+                    $("#resultadoDetalle").html(data);
+                }, error: function (xhr, status, error) {
+                    console.log("Error: " + error + ", No Error: " + xhr.status);
+                },
+            });
+            CerrarModal();
+        }
+        function EjecutarMovimiento() {
+            var idSuc = document.getElementById("comboSucursal").value;
+            var descripcion = document.getElementById("txtComentario").value;
+            if (descripcion.trim() == "") {
+                //alert("Ingrese la descripción del movimiento")
+                swal({ title: 'Validación', text: 'Ingrese la descripción del movimiento', type: 'warning' });
+                return
+            }
+            if (idSuc == 0) {
+                //alert("seleccione la sucursal")
+                swal({ title: 'Validación', text: 'Seleccione la sucursal', type: 'warning' });
+                return
+            }
+            var concepto = document.getElementById("comboConcepto").value
+            if (concepto == "") {
+                //alert("Seleccione el concepto del movimiento")
+                swal({ title: 'Validación', text: 'Seleccione el concepto del movimiento', type: 'warning' });
+                return
+            }
+            descripcion = concepto + " - " + descripcion
+            $.ajax({
+                type: "GET",
+                dataType: 'text',
+                url: "/Movimiento/EjecutarMovimiento",
+                data: { "idSuc": idSuc, "descripcion": descripcion, "tipoMov":1},
+                success: function (data) {
+                    $("#resultadoDetalle").html('');
+                    $("#resultadoDetalle").html(data);
+                    document.getElementById("comboSucursal").value = ""
+                    document.getElementById("txtComentario").value = ""
+                    document.getElementById("comboConcepto").value = ""
+                }, error: function (xhr, status, error) {
+                    console.log("Error: " + error + ", No Error: " + xhr.status);
+                },
+            });
+            
+           
+        }
+
+
+
+
+    </script>
+
+}

@@ -1,0 +1,98 @@
+﻿<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">
+        <img src="~/Content/IMAGES-PAGES/sol-logo.png" style="height:75px; width:120px; padding-left:20px" />
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item ">
+                @Html.ActionLink("Inicio", "Index", "Home", null, new { @class = "nav-link" })
+            </li>
+            <li class="nav-item">
+                @*<a class="nav-link" href="#">Inventario</a>*@
+                @Html.ActionLink("Inventario", "Inventario", "Productos", null, new { @class = "nav-link" })
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Movimiento</a>
+                <div class="dropdown-menu">
+                    @*<a class="dropdown-item" href="#">Realizar Entrada</a>*@
+                    @Html.ActionLink("Realizar Entrada", "MovimientoEntrada", "Movimiento", null, new { @class = "dropdown-item" })
+                    @*<a class="dropdown-item" href="#">Realizar Salida</a>*@
+                    @Html.ActionLink("Realizar Salida", "MovimientoSalida", "Movimiento", null, new { @class = "dropdown-item" })
+                    @*@Html.ActionLink("Realizar Transferencia", "MovimientoTransferencia", "Movimiento", null, new { @class = "dropdown-item" })*@
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Informes</a>
+                <div class="dropdown-menu">
+                    @Html.ActionLink("Entradas", "InformeEntrada", "Informes", null, new { @class = "dropdown-item" })
+                    @Html.ActionLink("Salidas", "InformeSalida", "Informes", null, new { @class = "dropdown-item" })
+                    @Html.ActionLink("Productos", "InformeProductos", "Informes", null, new { @class = "dropdown-item" })
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Mantenimiento</a>
+                <div class="dropdown-menu">
+                    @Html.ActionLink("Productos", "IndexAdmin", "Productos", null, new { @class = "dropdown-item" })
+                    @Html.ActionLink("Proveedores", "IndexAdmin", "Proveedores", null, new { @class = "dropdown-item" })
+                    @Html.ActionLink("Usuarios", "EditPermisos", "LogIn", null, new { @class = "dropdown-item" })
+                </div>
+            </li>
+            <li class="nav-item">
+                @Html.ActionLink("Acerca de", "About", "Home", null, new { @class = "nav-link" })
+            </li>
+            <li class="nav-item dropdown  ">
+                @*<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><img style="margin-top:-10px" width="32px" height="32px" src="~/Content/IMAGES-PAGES/configuracion.png" alt="Configuración" /></a>*@
+                @{
+                    string nombre = "";
+                    string email = "Perfil";
+                    int identificador = 0;
+                    Infraestructure.Models.USUARIO oUsuario;
+                    //Validar si existe en la sesión
+                    if (Session["User"] != null)
+                    {
+                        oUsuario = (Infraestructure.Models.USUARIO)Session["User"];
+                        if (oUsuario != null)
+                        {
+                            nombre = $"{oUsuario.nombre} {oUsuario.apellidos}";
+                            email = oUsuario.correo;
+                            identificador = oUsuario.ID;
+                        }
+                    }
+                }
+                @if (Session["User"] == null)
+                {
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        <img style="margin-top:-10px" width="32px" height="32px" src="~/Content/IMAGES-PAGES/user_offline_icon.png" alt="Configuración" />
+                    </a>
+                }
+                else
+                {
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        <img style="margin-top:-10px" width="32px" height="32px" src="~/Content/IMAGES-PAGES/user_online_icon.png" alt="Configuración" />
+                    </a>
+                }
+                <div class="dropdown-menu">
+                    @if (Session["User"] != null)
+                    {
+                        <span class="dropdown-item" style="color:forestgreen; font-weight:bolder!important">En línea: @nombre </span>
+                        <div class="dropdown-divider"></div>
+                    }
+                    @if (Session["User"] == null)
+                    {
+                        @Html.ActionLink("Ingresar", "Index", "LogIn", null, new { @class = "dropdown-item" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Perfil", "VerPerfil", "LogIn", new { id = @identificador }, new { @class = "dropdown-item " })
+                        @Html.ActionLink("Salir", "Logout", "LogIn", null, new { @class = "dropdown-item ", style = "color:red; font-weight:bolder" })
+                    }
+
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
